@@ -1,8 +1,11 @@
-FROM 15.8.0-alpine3.10
+FROM node:alpine3.10
 
-RUN git clone https://github.com/currentlib/interentMonitor.git
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git
 
-RUN cd interentMonitor
+RUN git clone http://gx-zwewebdwv040:8080/tfs/DefaultCollection/_git/YuriysNetworkMontoring
+
+WORKDIR /YuriysNetworkMontoring
 
 EXPOSE 3000
 
