@@ -6,11 +6,11 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'pug')
 
 app.get('/', (req, res) => {
-    res.send("Hello from GET");
+    res.send("Hello from GETasdsadsadsa");
 });
 
 app.post('/', (req, res) => {
-    res.send("Hello from POST");
+    res.send("Hello from POSTsadsaddasdsad");
 })
 
 app.listen(3000);
