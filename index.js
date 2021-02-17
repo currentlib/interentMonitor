@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
 
     res.sendStatus(200);
     inputParser(req.body);
@@ -21,15 +21,7 @@ app.listen(3000);
 
 
 function inputParser(input) {
-    switch (input.type) {
-        case "linux":
-            console.log("LINUX");
-            parseLinux(input.payload)
-            return 0;
-        case "windows":
-            console.log("WINDOWS");
-            return 0;
-    };
+	console.log(input);
 }
 
 function parseLinux(toParse) {
