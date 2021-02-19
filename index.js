@@ -56,7 +56,7 @@ function findDB(res, query){
     } else {
         db.count(query, (err, count) => {
             if (count > 0) {
-                db.find(query, (err, docs) => {
+                db.find(query).sort({timestamp: 1}).exec((err, docs) => {
                     if (err) {
                         console.log(err);
                         res.send(err);
