@@ -10,8 +10,6 @@ db.loadDatabase(function (err) {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.set('view engine', 'ejs');
-
 app.get('/api/get/stats', (req, res) => {
     findDB(res, req.query);
 });
@@ -27,10 +25,6 @@ app.delete('/api/delete/db', (req, res) => {
 app.post('/api/post/monitor', (req, res) => {
     inputParser(req.body);
     res.sendStatus(200);
-})
-
-app.get('/api/get/stats_file', (req, res) => {
-    findDBFile(res, req.query);
 })
 
 app.listen(3000);
