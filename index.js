@@ -11,20 +11,33 @@ db.loadDatabase(function (err) {
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/api/get/stats', (req, res) => {
-    findDB(res, req.query);
+    try {
+        findDB(res, req.query);
+    } catch (e) {
+        res.status(400);
+        res.send(e);
+    }
 });
 
 
 app.delete('/api/delete/db', (req, res) => {
-    db.remove({}, {multi: true}, (err, numRemoved) => {
-        console.log(numRemoved);
-    })
-    res.sendStatus(200);
+    try {
+        db.remove({}, {multi: true}, (err, numRemoved) => {});
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(400);
+        res.send(e);
+    }
 })
 
 app.post('/api/post/monitor', (req, res) => {
-    inputParser(req.body);
-    res.sendStatus(200);
+    try {
+        inputParser(req.body);
+        res.sendStatus(200);
+    } catch (e) {
+        res.status(400);
+        res.send(e);
+    }
 })
 
 app.listen(3000);
@@ -46,7 +59,8 @@ function insertDB(doc){
 
 function findDB(res, query){
     if ((query["name"] == undefined) || (query["date"] == undefined)) {
-        res.sendStatus(400)
+        res.status(400);
+        res.send("Please, provide name and date as parameters.");
     } else {
         db.count(query, (err, count) => {
             if (count > 0) {
@@ -74,7 +88,8 @@ function findDB(res, query){
                     }
                 })    
             } else {
-                res.sendStatus(400);
+                res.status(400);
+                res.send("Please check that the name and date are correct.")
             }
         });
         
