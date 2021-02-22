@@ -29,7 +29,7 @@ done
 RX=`bc <<< 'scale=3; '$RX'/5000'`
 TX=`bc <<< 'scale=3; '$TX'/5000'`
 
-for i in {1..300}
+for i in {1..50}
 do
         curl -X POST -H "application/json" -d name=$name -d rx=$RX -d tx=$TX $2
 done
