@@ -12,17 +12,27 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'pug');
 
-app.get('/', (req, res) => {
-    res.sendStatus(200);
+app.get('/api/get/stats', (req, res) => {
+    findDB(res, req.query);
 });
 
-app.post('/', (req, res) => {
+app.delete('/api/delete/db', (req, res) => {
+    db.remove({}, {multi: true}, (err, numRemoved) => {
+        console.log(numRemoved);
+    })
     res.sendStatus(200);
+})
+
+app.post('/api/post/monitor', (req, res) => {
     inputParser(req.body);
+    res.sendStatus(200);
+})
+
+app.get('/api/get/stats_file', (req, res) => {
+    findDBFile(res, req.query);
 })
 
 app.listen(3000);
-
 
 function inputParser(input) {
     let timestamp = new Date();
@@ -39,4 +49,26 @@ function insertDB(doc){
         if (err) console.log(err);
         console.log(newDoc);
     })
+}
+
+function findDB(res, query){
+    if (query["name"] != undefined) {
+        db.find(query, (err, docs) => {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send({ result: docs});
+            }
+        })
+    } else {
+        db.find(query, (err, docs) => {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send({ result: docs});
+            }
+        })
+    };
 }
