@@ -89,7 +89,7 @@ function findDB(res, query){
                 })    
             } else {
                 res.status(400);
-                res.send("Please check that the name and date are correct.")
+                res.send("No data for these parameters. Please check that the name and date are correct.")
             }
         });
         
