@@ -10,11 +10,10 @@ db.loadDatabase(function (err) {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set('view engine', 'pug');
-
 app.get('/api/get/stats', (req, res) => {
     findDB(res, req.query);
 });
+
 
 app.delete('/api/delete/db', (req, res) => {
     db.remove({}, {multi: true}, (err, numRemoved) => {
@@ -28,47 +27,56 @@ app.post('/api/post/monitor', (req, res) => {
     res.sendStatus(200);
 })
 
-app.get('/api/get/stats_file', (req, res) => {
-    findDBFile(res, req.query);
-})
-
 app.listen(3000);
 
 function inputParser(input) {
     let timestamp = new Date();
     input.rx = parseFloat(input.rx);
     input.tx = parseFloat(input.tx);
-    input.date = timestamp.toLocaleDateString("en-GB");
+    input.date = `${("0" + timestamp.getDate()).slice(-2)}/${("0" + (timestamp.getMonth() + 1)).slice(-2)}/${timestamp.getFullYear()}`;
     input.timestamp = timestamp.getTime();
-    console.log(input);
     insertDB(input);
 }
 
 function insertDB(doc){
     db.insert(doc, (err, newDoc) => {
         if (err) console.log(err);
-        console.log(newDoc);
     })
 }
 
 function findDB(res, query){
-    if (query["name"] != undefined) {
-        db.find(query, (err, docs) => {
-            if (err) {
-                console.log(err);
-                res.send(err);
-            } else {
-                res.send({ result: docs});
-            }
-        })
+    if ((query["name"] == undefined) || (query["date"] == undefined)) {
+        res.sendStatus(400)
     } else {
-        db.find(query, (err, docs) => {
-            if (err) {
-                console.log(err);
-                res.send(err);
+        db.count(query, (err, count) => {
+            if (count > 0) {
+                db.find(query).sort({timestamp: 1}).exec((err, docs) => {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        let obj = {
+                            machine: query["name"],
+                            unit: "kb/s",
+                            result: []
+                        }
+                        docs.forEach((element, i, arr) => {
+                            obj.result.push({
+                                date: element.date,
+                                tx: element.tx,
+                                rx: element.rx,
+                                timestamp: element.timestamp
+                            });
+                            if (i == arr.length - 1) {
+                                res.send(obj);
+                            }
+                        });
+                    }
+                })    
             } else {
-                res.send({ result: docs});
+                res.sendStatus(400);
             }
-        })
+        });
+        
     };
 }
